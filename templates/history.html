@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路径规划历史记录</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+    <div class="history-container">
+        <h1>路径规划历史记录</h1>
+        
+        {% if history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>起点</th>
+                    <th>终点</th>
+                    <th>出行方式</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                <tr>
+                    <td>{{ record.start_point }}</td>
+                    <td>{{ record.end_point }}</td>
+                    <td>
+                        {% if record.route_type == 'walking' %}
+                            步行
+                        {% elif record.route_type == 'driving' %}
+                            驾车
+                        {% elif record.route_type == 'bicycling' %}
+                            骑行
+                        {% else %}
+                            {{ record.route_type }}
+                        {% endif %}
+                    </td>
+                    <td>{{ record.created_at }}</td>
+                    <td>
+                        <button class="btn btn-primary view-route" data-route='{{ record.route_data }}'>查看路线</button>
+                        <button class="btn btn-secondary favorite-route" data-history-id="{{ record.id }}">收藏路线</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-records">
+            <p>暂无历史记录</p>
+        </div>
+        {% endif %}
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">返回首页</a>
+        </div>
+    </div>
+
+    <script src="/static/js/mapCore.js"></script>
+    <script src="/static/js/historyMap.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 查看路线按钮
+            const viewButtons = document.querySelectorAll('.view-route');
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const routeData = JSON.parse(this.getAttribute('data-route'));
+                    // 将路线数据存储到localStorage
+                    localStorage.setItem('historyRouteData', JSON.stringify(routeData));
+                    // 跳转到首页并显示路线
+                    window.location.href = "{{ url_for('index') }}?showHistoryRoute=true";
+                });
+            });
+            
+            // 收藏路线按钮
+            const favoriteButtons = document.querySelectorAll('.favorite-route');
+            favoriteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const historyId = this.getAttribute('data-history-id');
+                    
+                    fetch('/api/favorite_routes/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ history_id: historyId })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert(result.message);
+                            // 更新按钮状态
+                            this.textContent = '已收藏';
+                            this.disabled = true;
+                            this.classList.add('disabled');
+                        } else {
+                            alert(result.message || '收藏失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('收藏路线失败:', error);
+                        alert('操作失败，请稍后再试');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

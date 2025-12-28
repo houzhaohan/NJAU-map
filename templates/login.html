@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <style>
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .login-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+        }
+        .login-tab.active {
+            border: 1px solid #ddd;
+            border-bottom-color: white;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+            background-color: white;
+            font-weight: bold;
+        }
+        #admin-login-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h1>登录系统</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="login-tabs">
+            <div class="login-tab active" id="user-tab" onclick="switchTab('user')">用户登录</div>
+            <div class="login-tab" id="admin-tab" onclick="switchTab('admin')">管理员登录</div>
+        </div>
+        
+        <form method="post" action="{{ url_for('login') }}" id="user-login-form">
+            <input type="hidden" name="login_type" value="user">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">登录</button>
+                <a href="{{ url_for('register') }}" class="btn btn-link">注册新账号</a>
+            </div>
+        </form>
+        
+        <form method="post" action="{{ url_for('login') }}" id="admin-login-form">
+            <input type="hidden" name="login_type" value="admin">
+            <div class="form-group">
+                <label for="admin-username">管理员用户名</label>
+                <input type="text" id="admin-username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="admin-password">管理员密码</label>
+                <input type="password" id="admin-password" name="password" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">管理员登录</button>
+            </div>
+        </form>
+        
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">返回首页</a>
+        </div>
+    </div>
+    
+    <script src="/static/js/authMap.js"></script>
+    <script>
+        function switchTab(tabType) {
+            if (tabType === 'user') {
+                document.getElementById('user-tab').classList.add('active');
+                document.getElementById('admin-tab').classList.remove('active');
+                document.getElementById('user-login-form').style.display = 'block';
+                document.getElementById('admin-login-form').style.display = 'none';
+            } else {
+                document.getElementById('admin-tab').classList.add('active');
+                document.getElementById('user-tab').classList.remove('active');
+                document.getElementById('admin-login-form').style.display = 'block';
+                document.getElementById('user-login-form').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Flask==3.0.0
+flask_cors==4.0.1
+geopandas==0.14.0
+mysql-connector-python==8.3.0
+requests==2.31.0
+wfastcgi==3.0.0
+pyproj==3.6.1
+shapely==2.0.2
+fiona==1.9.5

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南京农业大学地图</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/auth.css">
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key={{ amap_key }}"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>南京农业大学地图导航</h1>
+            <div class="user-nav">
+                {% if session.get('user_id') %}
+                    <span class="welcome-msg">欢迎，{{ session.get('username') }}</span>
+                    {% if session.get('is_admin') %}
+                        <a href="{{ url_for('admin_panel') }}" class="nav-link">管理员面板</a>
+                    {% endif %}
+                    <a href="{{ url_for('favorites') }}" class="nav-link">我的收藏</a>
+                    <a href="{{ url_for('route_history') }}" class="nav-link">历史记录</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">退出登录</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">登录</a>
+                    <a href="{{ url_for('register') }}" class="nav-link">注册</a>
+                {% endif %}
+            </div>
+        </header>
+        
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <div class="control-panel">
+                <h2>路线规划</h2>
+                <div class="form-group">
+                    <label for="start-point">起点:</label>
+                    <select id="start-point"></select>
+                </div>
+                <div class="form-group">
+                    <label for="end-point">终点:</label>
+                    <select id="end-point"></select>
+                </div>
+                <div class="form-group">
+                    <label for="route-type">出行方式:</label>
+                    <select id="route-type">
+                        <option value="walking">步行</option>
+                        <option value="driving">驾车</option>
+                        <option value="bicycling">骑行</option>
+                    </select>
+                </div>
+                <button id="plan-route" class="btn">规划路线</button>
+                <button id="clear-route" class="btn">清除路线</button>
+            </div>
+            
+            <div class="nlp-panel">
+                <h2>自然语言路线规划</h2>
+                <div class="form-group">
+                    <label for="nlp-input">请输入路线指令:</label>
+                    <input type="text" id="nlp-input" placeholder="例如：带我从3号门到诚苑餐厅" />
+                </div>
+                <button id="nlp-plan-route" class="btn">智能规划路线</button>
+                <div id="nlp-result"></div>
+            </div>
+        </div>
+        
+        <!-- 校园地图图片展示区域 -->
+        <div class="campus-map-container">
+            <h2>校园全景图</h2>
+            <div class="map-image-wrapper">
+                <img src="/static/image/e-map.jpg" alt="南京农业大学校园地图" class="campus-map-image">
+            </div>
+            <p class="map-image-hint">提示：可滑动查看完整地图</p>
+        </div>
+
+        <div class="poi-list">
+            <h2>校园地点列表</h2>
+            <div id="poi-container"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/mapCore.js"></script>
+    <script src="/static/js/favoritesMap.js"></script>
+    <script src="/static/js/indexMap.js"></script>
+</body>
+</html>

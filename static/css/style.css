@@ -1,0 +1,306 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+h1 {
+    color: #333;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+h2 {
+    color: #333;
+    margin: 0;
+}
+
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+    margin-top: 10px;
+}
+
+.welcome-msg {
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-link {
+    color: #1890FF;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    background-color: #f0f0f0;
+    text-decoration: underline;
+}
+
+/* 收藏按钮样式 */
+.favorite-btn {
+    background-color: #1890FF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.favorite-btn.favorited {
+    background-color: #ff4d4f;
+}
+
+.favorite-btn:hover {
+    opacity: 0.8;
+}
+
+/* 地图容器样式 */
+.map-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+}
+
+/* 控制面板样式 */
+.control-panel {
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+/* 自然语言输入面板样式 */
+.nlp-panel {
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+/* 文本输入框样式 */
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 10px;
+    background-color: #005826;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #004020;
+}
+
+#clear-route {
+    background-color: #c62828;
+}
+
+#clear-route:hover {
+    background-color: #b71c1c;
+}
+
+/* 兴趣点列表样式 */
+.poi-list {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 兴趣点列表头部样式 */
+.poi-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 兴趣点数量显示 */
+.poi-count {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 折叠按钮样式 */
+.toggle-btn {
+    padding: 5px 15px;
+    background-color: #1890FF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.toggle-btn:hover {
+    background-color: #40A9FF;
+}
+
+/* 校园地图图片容器样式 */
+.campus-map-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* 地图图片包装器样式 */
+.map-image-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin: 15px 0;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+/* 校园地图图片样式 */
+.campus-map-image {
+    width: auto;
+    height: 500px;
+    display: block;
+}
+
+/* 地图图片提示文本样式 */
+.map-image-hint {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+#poi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.poi-item {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border-left: 4px solid #005826;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.poi-item:hover {
+    background-color: #e8f5e8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.poi-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.poi-address, .poi-type {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* 响应式设计 - 桌面端特定样式 */
+@media (min-width: 1024px) {
+    .map-container {
+        flex-direction: row;
+    }
+    
+    #map {
+        flex: 1;
+        height: 500px;
+    }
+    
+    .control-panel {
+        width: 300px;
+        border-top: none;
+        border-left: 1px solid #eee;
+    }
+    
+    .nlp-panel {
+        width: 300px;
+        border-top: none;
+        border-left: 1px solid #eee;
+    }
+}
+
+/* 平板和小屏幕设备优化 */
+@media (max-width: 1023px) {
+    #map {
+        height: 350px;
+    }
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的收藏 - 地图导航系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+    <div class="container history-container">
+        <h1>我的收藏</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- 收藏点部分 -->
+        <section class="favorites-section">
+            <h2>收藏的兴趣点</h2>
+            {% if favorite_points %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>兴趣点名称</th>
+                            <th>收藏时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for favorite in favorite_points %}
+                        <tr>
+                            <td>{{ favorite.id }}</td>
+                            <td>{{ favorite.point_name }}</td>
+                            <td>{{ favorite.created_at }}</td>
+                            <td>
+                                <button class="btn btn-danger remove-favorite" data-id="{{ favorite.point_id }}">取消收藏</button>
+                                <button class="btn btn-primary view-on-map" data-id="{{ favorite.point_id }}">查看兴趣点</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-records">您还没有收藏任何兴趣点</p>
+            {% endif %}
+        </section>
+        
+        <!-- 收藏路线部分 -->
+        <section class="favorites-section">
+            <h2>收藏的路线</h2>
+            {% if favorite_routes %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>起点</th>
+                            <th>终点</th>
+                            <th>出行方式</th>
+                            <th>收藏时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for route in favorite_routes %}
+                        <tr>
+                            <td>{{ route.id }}</td>
+                            <td>{{ route.start_point }}</td>
+                            <td>{{ route.end_point }}</td>
+                            <td>
+                                {% if route.route_type == 'walking' %}
+                                    步行
+                                {% elif route.route_type == 'driving' %}
+                                    驾车
+                                {% elif route.route_type == 'bicycling' %}
+                                    骑行
+                                {% else %}
+                                    {{ route.route_type }}
+                                {% endif %}
+                            </td>
+                            <td>{{ route.created_at }}</td>
+                            <td>
+                                <button class="btn btn-danger remove-route" data-history-id="{{ route.history_id }}">取消收藏</button>
+                                <button class="btn btn-primary view-favorite-route" data-route='{{ route.route_data }}'>查看路线</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-records">您还没有收藏任何路线</p>
+            {% endif %}
+        </section>
+        
+        <a href="/" class="back-link">返回首页</a>
+    </div>
+
+    <script src="/static/js/mapCore.js"></script>
+    <script src="/static/js/favoritesMap.js"></script>
+    <script>
+        // 取消收藏点功能
+        document.querySelectorAll('.remove-favorite').forEach(button => {
+            button.addEventListener('click', function() {
+                const pointId = this.getAttribute('data-id');
+                if (confirm('确定要取消收藏这个兴趣点吗？')) {
+                    fetch('/api/favorites/remove', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ point_id: pointId })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            // 刷新页面
+                            window.location.reload();
+                        } else {
+                            alert(result.message || '操作失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('取消收藏失败:', error);
+                        alert('操作失败，请稍后再试');
+                    });
+                }
+            });
+        });
+        
+        // 取消收藏路线功能
+        document.querySelectorAll('.remove-route').forEach(button => {
+            button.addEventListener('click', function() {
+                const historyId = this.getAttribute('data-history-id');
+                if (confirm('确定要取消收藏这条路线吗？')) {
+                    fetch('/api/favorite_routes/remove', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ history_id: historyId })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            // 刷新页面
+                            window.location.reload();
+                        } else {
+                            alert(result.message || '操作失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('取消收藏路线失败:', error);
+                        alert('操作失败，请稍后再试');
+                    });
+                }
+            });
+        });
+        
+        // '查看兴趣点'按钮点击事件
+        document.querySelectorAll('.view-on-map').forEach(button => {
+            button.addEventListener('click', function() {
+                const pointId = this.getAttribute('data-id');
+                window.location.href = '/?point_id=' + pointId;
+            });
+        });
+        
+        // 查看收藏路线按钮点击事件
+        document.querySelectorAll('.view-favorite-route').forEach(button => {
+            button.addEventListener('click', function() {
+                const routeData = JSON.parse(this.getAttribute('data-route'));
+                // 将路线数据存储到localStorage
+                localStorage.setItem('historyRouteData', JSON.stringify(routeData));
+                // 跳转到首页并显示路线
+                window.location.href = "{{ url_for('index') }}?showHistoryRoute=true";
+            });
+        });
+    </script>
+</body>
+</html>
